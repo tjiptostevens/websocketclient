@@ -1,7 +1,8 @@
 import React, { Component } from "react";
 import "./App.css";
+// import Nes from "@hapi/nes";
+// const client = new Nes.Client("ws://192.168.18.37:8000");
 import { w3cwebsocket as wsSocket } from "websocket";
-
 const client = new wsSocket("ws://192.168.18.37:8000");
 
 class App extends Component {
@@ -19,7 +20,7 @@ class App extends Component {
       JSON.stringify({
         type: "message",
         msg: value,
-        usr: this.state.usr,
+        sender: this.state.usr,
       })
     );
   };
@@ -36,6 +37,7 @@ class App extends Component {
       console.log("websocket client connected");
     };
     client.onmessage = (message) => {
+      console.log(message);
       const dataFromServer = JSON.parse(message.data);
       console.log("got reply! ", dataFromServer);
       if (dataFromServer.type === "message") {
@@ -52,6 +54,7 @@ class App extends Component {
   render() {
     return (
       <>
+        {console.log(client)}
         <div>
           {this.state.isLoggedIn ? (
             <>
