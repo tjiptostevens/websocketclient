@@ -33,8 +33,12 @@ class App extends Component {
     this.setState({ isLoggedIn: true, usr: this.state.usr });
   };
   componentDidMount() {
-    client.onopen = () => {
+    client.onopen = (message) => {
+      const dataFromServer = JSON.parse(message.data);
       console.log("websocket client connected");
+      this.setState((s) => ({
+        messages: dataFromServer,
+      }));
     };
     client.onmessage = (message) => {
       console.log(message);
@@ -46,6 +50,10 @@ class App extends Component {
             ...s.messages,
             { msg: dataFromServer.msg, usr: dataFromServer.usr },
           ],
+        }));
+      } else {
+        this.setState((s) => ({
+          messages: dataFromServer,
         }));
       }
     };
@@ -65,8 +73,8 @@ class App extends Component {
                 Send Message
               </button>
               {this.state.messages.map((d) => (
-                <p>
-                  message:{d.msg}, user:{d.usr}
+                <p key={d.id}>
+                  message:{d.message}, user:{d.sender}
                 </p>
               ))}
             </>
