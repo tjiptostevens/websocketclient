@@ -3,7 +3,7 @@ import "./App.css";
 // import Nes from "@hapi/nes";
 // const client = new Nes.Client("ws://192.168.18.37:8000");
 import { w3cwebsocket as wsSocket } from "websocket";
-const client = new wsSocket("ws://192.168.18.37:8000");
+const client = new wsSocket("ws://192.168.0.115:8000");
 
 class App extends Component {
   //   constructor(props) {
@@ -19,14 +19,14 @@ class App extends Component {
     client.send(
       JSON.stringify({
         type: "message",
-        msg: value,
+        msg: this.state.msg,
         sender: this.state.usr,
       })
     );
   };
   handleChange = (e) => {
     console.log(e.target.value);
-    this.setState({ usr: e.target.value });
+    this.setState({ [e.target.name]: e.target.value });
   };
   handleSubmit = (e) => {
     e.preventDefault();
@@ -66,24 +66,97 @@ class App extends Component {
         <div>
           {this.state.isLoggedIn ? (
             <>
-              <button
-                className="btn btn-primary"
-                onClick={() => this.sendMessage("Hello!")}
+              <div
+                className="row col-md-12"
+                style={{
+                  display: "flex",
+                  flexDirection: "row",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  height: "100vh",
+                }}
               >
-                Send Message
-              </button>
-              {this.state.messages.map((d) => (
-                <p key={d.id}>
-                  message:{d.message}, user:{d.sender}
-                </p>
-              ))}
+                <div
+                  className="col-md-6"
+                  style={{
+                    display: "flex",
+                    flexDirection: "row",
+                    justifyContent: "center",
+                    alignItems: "center",
+                    height: "100%",
+                  }}
+                >
+                  <input
+                    className="form-control"
+                    type="text"
+                    name="msg"
+                    onChange={this.handleChange}
+                    style={{
+                      display: "flex",
+                    }}
+                  />
+                  <button
+                    className="btn btn-primary"
+                    onClick={() => this.sendMessage()}
+                    style={{
+                      display: "flex",
+                    }}
+                  >
+                    Send Message
+                  </button>
+                </div>
+                <div className="col-md-6">
+                  {this.state.messages
+                    .sort((a, b) => a.timestamp < b.timestamp)
+                    .map((d) => (
+                      <p key={d.id}>
+                        message:{d.msg}, user:{d.sender}
+                      </p>
+                    ))}
+                </div>
+              </div>
             </>
           ) : (
             <>
-              <form onSubmit={this.handleSubmit}>
-                <input type="text" name="usr" onChange={this.handleChange} />
-                <button className="btn btn-primary">Login</button>
-              </form>
+              <div
+                className="col-md-12"
+                style={{
+                  display: "flex",
+                  flexDirection: "column",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  height: "100vh",
+                }}
+              >
+                <form
+                  className="col-md-6"
+                  onSubmit={this.handleSubmit}
+                  style={{
+                    display: "flex",
+                    flexDirection: "row",
+                    justifyContent: "center",
+                    alignItems: "center",
+                  }}
+                >
+                  <input
+                    className="form-control"
+                    type="text"
+                    name="usr"
+                    onChange={this.handleChange}
+                    style={{
+                      display: "flex",
+                    }}
+                  />
+                  <button
+                    className="btn btn-primary"
+                    style={{
+                      display: "flex",
+                    }}
+                  >
+                    Login
+                  </button>
+                </form>
+              </div>
             </>
           )}
         </div>
